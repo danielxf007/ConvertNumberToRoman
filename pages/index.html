@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+        <label for="Number">Enter Number: </label><br><br>
+        <input type="number" id="num" name="num" required>
+        <button type="button" onclick="show_number()">Convert To Roman</button><br><br>
+        <p id="result"></p>
+    </body>
+</html>
+<script>
+var symbols = {1: 'I', 5: 'V', 10: 'X', 50: 'L', 100: 'C', 500: 'D', 1000: 'M'};
+var numbers = [1, 5, 10, 50, 100, 500, 1000]
+var roman_numbers = [''];
+
+function get_current_symbol(number){
+    let current_symbol = '';
+    for (let k of numbers){
+        if (k == 1 || k == 10 || k == 100 || k == 1000){
+            if (k <= number && number < 4*k){
+                current_symbol = symbols[k];
+                break;
+            }
+            if (4*k <= number && number < 5*k){
+                current_symbol = symbols[k] + symbols[5*k];
+                break;
+            }
+        }else{
+            if (k <= number && number < k + 4*(k/5)){
+                current_symbol = symbols[k];
+                break;
+            }
+            if (k + 4*(k/5) <= number && number < 2*k){
+                current_symbol = symbols[k/5] + symbols[2*k]
+                break;
+            }
+        }
+    }
+    return current_symbol;
+}
+
+function arabic_to_roman(number){
+    if (number <= 0 || number > 3999) return 'Can not be represented as Roman Number';
+    if (!number > roman_numbers.length-1) return roman_numbers[number];
+    let current_symbol;
+    let current_number = roman_numbers.length;
+    let number_with_symbol;
+    while(current_number <= number){
+        current_symbol = get_current_symbol(current_number);
+        number_with_symbol = roman_numbers.indexOf(current_symbol);
+        if (number_with_symbol != -1){
+            current_symbol += roman_numbers[current_number-number_with_symbol];
+        }
+        roman_numbers.push(current_symbol);
+        current_number += 1;
+    }
+    return roman_numbers[number];
+}
+
+function show_number(){
+    let number = document.getElementById("num").value;
+    document.getElementById("result").innerHTML = 'Roman Number: ' +  arabic_to_roman(number);
+}
+</script>
